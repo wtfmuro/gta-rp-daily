@@ -157,7 +157,23 @@ function toggleX2()  { state.x2  = !state.x2;  updateHeader(); updateBadges(); s
 
 // ─── Task actions ─────────────────────────────────────────────────────────────
 function toggleTask(id) {
-  state.ts[id].done = !state.ts[id].done;
+  const task = TASKS.find(t => t.id === id);
+  const ts   = state.ts[id];
+  const done = isTaskDone(task);
+
+  if (done) {
+    // Снимаем галочку — сбрасываем всё
+    ts.done  = false;
+    ts.count = 0;
+  } else {
+    if (task.max > 0) {
+      // Счётчик — ставим галочку вручную, заполняем до макса
+      ts.count = task.max;
+    } else {
+      ts.done = true;
+    }
+  }
+
   refreshCard(id);
   updateHeader();
   scheduleSave();
