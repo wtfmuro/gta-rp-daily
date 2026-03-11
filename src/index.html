@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTA RP Daily</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="bp-block">
+      <span class="bp-pill">BP</span>
+      <span class="bp-value" id="bp-value">0</span>
+      <span class="bp-sep">/</span>
+      <span class="bp-max" id="bp-max">0</span>
+    </div>
+    <div class="header-right">
+      <button class="mult-btn" id="vip-btn" onclick="toggleVIP()" title="VIP ×2">
+        <span class="mult-top">VIP</span>
+        <span class="mult-bot">×2</span>
+      </button>
+      <button class="mult-btn" id="x2-btn" onclick="toggleX2()" title="Серверный ×2">
+        <span class="mult-top">Сервер</span>
+        <span class="mult-bot">×2</span>
+      </button>
+      <button class="icon-btn" onclick="confirmReset()" title="Сбросить прогресс">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="openSettings()" title="Порядок заданий">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── PROGRESS BAR ── -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- ── TASK LIST ── -->
+  <div class="scroll-area">
+    <div id="task-list"></div>
+  </div>
+
+  <!-- ── SETTINGS OVERLAY ── -->
+  <div class="overlay" id="settings-overlay">
+    <div class="panel">
+      <div class="panel-header">
+        <span>Порядок заданий</span>
+        <button class="close-btn" onclick="closeSettings()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="panel-body" id="settings-list"></div>
+    </div>
+  </div>
+
+  <!-- ── RESET MODAL ── -->
+  <div class="overlay" id="reset-modal">
+    <div class="modal">
+      <p>Сбросить весь прогресс?</p>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="cancelReset()">Отмена</button>
+        <button class="btn-reset" onclick="doReset()">Сбросить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
