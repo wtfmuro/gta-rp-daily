@@ -34,7 +34,7 @@ fn main() {
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
 
-            // Restore saved position
+            // Restore saved position then show window
             if let Ok(raw) = std::fs::read_to_string(winpos_path()) {
                 if let Ok(pos) = serde_json::from_str::<serde_json::Value>(&raw) {
                     let x = pos["x"].as_f64().unwrap_or(0.0);
@@ -42,6 +42,7 @@ fn main() {
                     let _ = window.set_position(tauri::PhysicalPosition::new(x as i32, y as i32));
                 }
             }
+            let _ = window.show();
 
             // Save position on close
             let window_clone = window.clone();
