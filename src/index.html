@@ -8,45 +8,90 @@
 </head>
 <body>
 
-  <!-- ── HEADER ── -->
-  <div class="header">
-    <div class="bp-block">
-      <span class="bp-pill">BP</span>
-      <span class="bp-value" id="bp-value">0</span>
-      <span class="bp-sep">/</span>
-      <span class="bp-max" id="bp-max">0</span>
+  <!-- ── MAIN CONTENT AREA ── -->
+  <div class="main-area">
+
+    <!-- ── FARM BP VIEW ── -->
+    <div class="view" id="farm-bp-view">
+
+      <!-- ── HEADER ── -->
+      <div class="header">
+        <div class="bp-block">
+          <span class="bp-pill">BP</span>
+          <span class="bp-value" id="bp-value">0</span>
+          <span class="bp-sep">/</span>
+          <span class="bp-max" id="bp-max">0</span>
+        </div>
+        <div class="header-right">
+          <button class="mult-btn" id="vip-btn" onclick="toggleVIP()" title="VIP ×2">
+            <span class="mult-top">VIP</span>
+            <span class="mult-bot">×2</span>
+          </button>
+          <button class="mult-btn" id="x2-btn" onclick="toggleX2()" title="Серверный ×2">
+            <span class="mult-top">Сервер</span>
+            <span class="mult-bot">×2</span>
+          </button>
+          <button class="icon-btn" onclick="confirmReset()" title="Сбросить прогресс">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+          </button>
+          <button class="icon-btn" onclick="openSettings()" title="Порядок заданий">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── PROGRESS BAR ── -->
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <!-- ── TASK LIST ── -->
+      <div class="scroll-area">
+        <div id="task-list"></div>
+      </div>
+
     </div>
-    <div class="header-right">
-      <button class="mult-btn" id="vip-btn" onclick="toggleVIP()" title="VIP ×2">
-        <span class="mult-top">VIP</span>
-        <span class="mult-bot">×2</span>
-      </button>
-      <button class="mult-btn" id="x2-btn" onclick="toggleX2()" title="Серверный ×2">
-        <span class="mult-top">Сервер</span>
-        <span class="mult-bot">×2</span>
-      </button>
-      <button class="icon-btn" onclick="confirmReset()" title="Сбросить прогресс">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
-        </svg>
-      </button>
-      <button class="icon-btn" onclick="openSettings()" title="Порядок заданий">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
-        </svg>
-      </button>
+
+    <!-- ── TIMERS VIEW ── -->
+    <div class="view hidden" id="timers-view">
+      <div class="timers-top">
+        <button class="add-timer-btn" id="add-timer-btn" onclick="openTimerModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Добавить свой таймер
+        </button>
+        <span class="timers-hint">Перетащите таймер за иконку для изменения порядка</span>
+      </div>
+      <div class="scroll-area">
+        <div class="timer-grid" id="timer-grid"></div>
+      </div>
     </div>
+
   </div>
 
-  <!-- ── PROGRESS BAR ── -->
-  <div class="progress-track">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-
-  <!-- ── TASK LIST ── -->
-  <div class="scroll-area">
-    <div id="task-list"></div>
+  <!-- ── DOCK BAR ── -->
+  <div class="dock-bar">
+    <button class="dock-tab active" id="dock-farm" onclick="switchView('farm')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+        <rect x="9" y="3" width="6" height="4" rx="1"/>
+        <path d="M9 14l2 2 4-4"/>
+      </svg>
+      <span>Farm BP</span>
+    </button>
+    <button class="dock-tab" id="dock-timers" onclick="switchView('timers')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Таймеры</span>
+    </button>
   </div>
 
   <!-- ── SETTINGS OVERLAY ── -->
@@ -71,6 +116,24 @@
       <div class="modal-btns">
         <button class="btn-cancel" onclick="cancelReset()">Отмена</button>
         <button class="btn-reset" onclick="doReset()">Сбросить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIMER MODAL ── -->
+  <div class="overlay" id="timer-modal">
+    <div class="modal timer-modal-box">
+      <p id="timer-modal-title">Добавить таймер</p>
+      <div class="timer-form">
+        <label class="timer-label">Название</label>
+        <input type="text" id="timer-name-input" class="timer-input" maxlength="30" placeholder="Название таймера" />
+        <label class="timer-label">Длительность</label>
+        <input type="text" id="timer-duration-input" class="timer-input" placeholder="H:MM:SS или MM:SS или секунды" />
+        <span class="timer-error" id="timer-error"></span>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeTimerModal()">Отмена</button>
+        <button class="btn-save" id="timer-save-btn" onclick="saveTimerModal()">Сохранить</button>
       </div>
     </div>
   </div>

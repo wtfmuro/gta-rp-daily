@@ -5,6 +5,7 @@
   --accent:     #f5940a;
   --accent-dim: rgba(245,148,10,0.10);
   --green:      #3dba6e;
+  --green-dim:  rgba(61,186,110,0.12);
   --red:        #e05050;
   --text:       #e8e8ec;
   --text-dim:   #7a7a84;
@@ -31,6 +32,11 @@ body {
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
+
+/* ─── View system ────────────────────────────────────────── */
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.view { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.view.hidden { display: none; }
 
 /* ─── Header ─────────────────────────────────────────────── */
 .header {
@@ -205,6 +211,134 @@ body {
   color: var(--accent); min-width: 36px; text-align: center; flex-shrink: 0;
 }
 
+/* ─── Dock bar ───────────────────────────────────────────── */
+.dock-bar {
+  display: flex; flex-shrink: 0;
+  background: #131316;
+  border-top: 1px solid var(--border);
+  padding: 6px 10px;
+  gap: 6px;
+}
+.dock-tab {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 0; border-radius: 10px; border: none;
+  background: transparent; color: var(--text-dim);
+  cursor: pointer; font-size: 10px; font-weight: 600;
+  transition: background .18s, color .18s;
+  letter-spacing: 0.3px;
+}
+.dock-tab:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.dock-tab.active {
+  background: var(--accent-dim); color: var(--accent);
+}
+.dock-tab.active svg { stroke: var(--accent); }
+
+/* ─── Timers view ────────────────────────────────────────── */
+.timers-top {
+  flex-shrink: 0; padding: 10px 12px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.add-timer-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 10px; border-radius: 8px; border: none;
+  background: #FFC107; color: #1a1a1a;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: opacity .15s, transform .08s;
+}
+.add-timer-btn:hover { opacity: 0.9; }
+.add-timer-btn:active { transform: scale(0.97); }
+.timers-hint {
+  font-size: 11px; color: var(--text-hint); text-align: center;
+  padding: 2px 0 6px;
+}
+
+/* ─── Timer grid ─────────────────────────────────────────── */
+.timer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 2px 14px;
+}
+@media (max-width: 400px) {
+  .timer-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Timer card ─────────────────────────────────────────── */
+.timer-card {
+  background: #242424;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  transition: border-color .2s;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+.timer-card.active { border-left-color: #4CAF50; }
+.timer-card.finished { animation: timer-pulse 0.6s ease-in-out 3; }
+.timer-card.dragging { opacity: 0.4; }
+.timer-card.drag-over-card { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+@keyframes timer-pulse {
+  0%, 100% { border-left-color: transparent; }
+  50% { border-left-color: #f44336; }
+}
+
+.timer-card-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 10px; min-height: 20px;
+}
+.timer-drag-handle {
+  color: var(--text-hint); font-size: 16px; cursor: grab;
+  opacity: 0; transition: opacity .15s;
+  flex-shrink: 0; letter-spacing: -1px; line-height: 1;
+  touch-action: none;
+}
+.timer-card:hover .timer-drag-handle { opacity: 1; }
+.timer-name {
+  flex: 1; font-size: 13px; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.timer-actions { display: flex; gap: 4px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
+.timer-card:hover .timer-actions { opacity: 1; }
+
+.timer-action-btn {
+  width: 22px; height: 22px; border-radius: 5px; border: none;
+  background: rgba(255,255,255,0.06); color: var(--text-dim);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .12s, color .12s;
+}
+.timer-action-btn:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+.timer-action-btn.delete:hover { background: rgba(224,80,80,0.2); color: var(--red); }
+
+.timer-display {
+  font-size: 28px; font-weight: 700; color: #4CAF50;
+  font-family: 'Consolas', 'Courier New', monospace;
+  text-align: center; margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.timer-controls { display: flex; gap: 6px; }
+.timer-btn-start {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px; border-radius: 6px; border: none;
+  background: #4CAF50; color: #1a1a1a;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: opacity .12s, transform .08s;
+}
+.timer-btn-start:hover { opacity: 0.85; }
+.timer-btn-start:active { transform: scale(0.96); }
+.timer-btn-start.paused { background: #66BB6A; }
+
+.timer-btn-reset {
+  width: 36px; display: flex; align-items: center; justify-content: center;
+  padding: 8px; border-radius: 6px; border: none;
+  background: #333; color: var(--text-dim);
+  font-size: 16px; cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.timer-btn-reset:hover { background: #444; color: var(--text); }
+
 /* ─── Overlay ────────────────────────────────────────────── */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -270,3 +404,26 @@ body {
 .btn-cancel:hover { background: #222226; }
 .btn-reset  { background: var(--red); color: #fff; }
 .btn-reset:hover { opacity: 0.85; }
+
+/* ─── Timer modal ────────────────────────────────────────── */
+.timer-modal-box { width: 320px; text-align: left; }
+.timer-modal-box p { text-align: center; font-size: 15px; margin-bottom: 16px; }
+.timer-form { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.timer-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.timer-input {
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: 1px solid var(--border); background: #1c1c1f;
+  color: var(--text); font-size: 13px; font-family: inherit;
+  outline: none; transition: border-color .15s;
+}
+.timer-input:focus { border-color: var(--accent); }
+.timer-input::placeholder { color: var(--text-hint); }
+.timer-error { font-size: 11px; color: var(--red); min-height: 16px; }
+.btn-save {
+  padding: 8px 22px; border-radius: 8px; border: none;
+  background: #4CAF50; color: #1a1a1a;
+  cursor: pointer; font-size: 13px; font-weight: 700;
+  transition: opacity .15s, transform .1s;
+}
+.btn-save:hover { opacity: 0.85; }
+.btn-save:active { transform: scale(0.96); }

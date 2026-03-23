@@ -1,9 +1,12 @@
 /* global __TAURI__ */
 'use strict';
 
+// ═══════════════════════════════════════════════════════════════════════════════════
+//  FARM BP — Existing task tracker
+// ═══════════════════════════════════════════════════════════════════════════════════
+
 // ─── Task Definitions ─────────────────────────────────────────────────────────
 const TASKS = [
-  // ── Лёгкие ──
   { id: 'lottery',      name: 'Купить лотерейный билет',                               bp: 1,  cat: 'easy', max: 0  },
   { id: 'site',         name: 'Посетить любой сайт в браузере',                        bp: 1,  cat: 'easy', max: 0  },
   { id: 'match',        name: 'Поставить лайк любой анкете в Match',                   bp: 1,  cat: 'easy', max: 0  },
@@ -22,7 +25,6 @@ const TASKS = [
   { id: 'darts',        name: 'Победить в дартс',                                      bp: 1,  cat: 'easy', max: 0  },
   { id: 'volleyball',   name: 'Забить 10 голов в волейболе',                           bp: 1,  cat: 'easy', max: 10 },
   { id: 'leasing',      name: 'Сделать платёж по лизингу',                             bp: 1,  cat: 'easy', max: 0  },
-  // ── Средние ──
   { id: 'construction', name: '25 действий на стройке',                                bp: 2,  cat: 'med',  max: 25 },
   { id: 'port',         name: '25 действий в порту',                                   bp: 2,  cat: 'med',  max: 25 },
   { id: 'mine',         name: '25 действий в шахте',                                   bp: 2,  cat: 'med',  max: 25 },
@@ -36,7 +38,6 @@ const TASKS = [
   { id: 'treasure',     name: 'Выкопать 1 сокровище',                                  bp: 1,  cat: 'med',  max: 0  },
   { id: 'hunting',      name: '5 раз снять 100% шкуру с животных',                     bp: 2,  cat: 'med',  max: 5  },
   { id: 'trucker',      name: 'Выполнить 3 заказа дальнобойщиком',                     bp: 2,  cat: 'med',  max: 3  },
-  // ── Совместные ──
   { id: 'mafia',        name: 'Сыграть в мафию в казино',                              bp: 3,  cat: 'coop', max: 0  },
   { id: 'karting',      name: 'Выиграть гонку в картинге',                             bp: 1,  cat: 'coop', max: 0  },
   { id: 'race',         name: 'Проехать 1 уличную гонку (через тлф. ставка от 1000$)', bp: 1,  cat: 'coop', max: 0  },
@@ -45,14 +46,12 @@ const TASKS = [
   { id: 'dance',        name: '3 победы в Данс Баттлах',                               bp: 2,  cat: 'coop', max: 3  },
   { id: 'armwrestling', name: 'Победить в армрестлинге',                               bp: 1,  cat: 'coop', max: 0  },
   { id: 'car_repair',   name: 'Починка авто другому игроку',                           bp: 2,  cat: 'coop', max: 0  },
-  // ── Не хочется ──
   { id: 'post',         name: '10 посылок на почте',                                   bp: 1,  cat: 'hard', max: 10 },
   { id: 'case_dp',      name: 'Прокрутить за DP серебряный или золотой кейс',          bp: 10, cat: 'hard', max: 0  },
   { id: 'biz_order',    name: 'Заказ материалов для бизнеса вручную (вкл/выкл)',        bp: 1,  cat: 'hard', max: 0  },
   { id: 'fireman',      name: 'Потушить 25 огоньков пожарным',                         bp: 1,  cat: 'hard', max: 25 },
   { id: 'surgeon',      name: 'Два раза оплатить смену внешности у хирурга в EMS',     bp: 2,  cat: 'hard', max: 2  },
   { id: 'airdrop',      name: 'Принять участие в двух аирдропах',                      bp: 4,  cat: 'hard', max: 2  },
-  // ── Фракционные ──
   { id: 'graffiti',     name: '7 закрашенных граффити',                                bp: 1,  cat: 'frac', max: 7  },
   { id: 'contraband',   name: 'Сдать 5 контрабанды',                                   bp: 2,  cat: 'frac', max: 5  },
   { id: 'captwars',     name: 'Участие в каптах/бизварах',                             bp: 1,  cat: 'frac', max: 0  },
@@ -87,10 +86,43 @@ let state = {
 };
 let saveTimer = null;
 
+// ═══════════════════════════════════════════════════════════════════════════════════
+//  TIMERS — New timer feature
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const PRESET_TIMERS = [
+  { id: 'pr_org',        name: 'Организация',           duration: 7200 },
+  { id: 'pr_mail',       name: 'Почта',                 duration: 600  },
+  { id: 'pr_carjacking', name: 'Автоугон',              duration: 5400 },
+  { id: 'pr_pimp',       name: 'Сутенерка',             duration: 5400 },
+  { id: 'pr_contraband', name: 'Контрабанда',           duration: 300  },
+  { id: 'pr_bus',        name: 'Автобус',               duration: 5    },
+  { id: 'pr_club',       name: 'Задание клуба',         duration: 7200 },
+  { id: 'pr_range',      name: 'Тир',                   duration: 5400 },
+  { id: 'pr_sewing',     name: 'Швейка (Деморган)',     duration: 87   },
+  { id: 'pr_boxes',      name: 'Коробки (Деморган)',    duration: 67   },
+  { id: 'pr_biker',      name: 'Байкерка',              duration: 7200 },
+  { id: 'pr_redneck',    name: 'Реднеки',               duration: 7200 },
+  { id: 'pr_carmit',     name: 'Кармит',                duration: 7200 },
+  { id: 'pr_merryw',     name: 'Меривезер',             duration: 7200 },
+  { id: 'pr_epsilon',    name: 'Эпсилон',               duration: 7200 },
+  { id: 'pr_pettrain',   name: 'Дрессировки питомца',   duration: 930  },
+];
+
+// Timer state: { [id]: { remaining, endTime, intervalId, state: 'idle'|'running'|'paused'|'finished' } }
+let timerStates = {};
+let customTimers = [];
+let timerOrderIds = [];
+let timerEditId = null;
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   await loadState();
+  await loadTimers();
   render();
   updateHeader();
+  renderTimers();
+  requestNotificationPermission();
 });
 
 // ─── Persistence ──────────────────────────────────────────────────────────────
@@ -121,6 +153,480 @@ function scheduleSave() {
     catch (e) { console.error('Save failed:', e); }
   }, 350);
 }
+
+// ─── Timer persistence ────────────────────────────────────────────────────────
+async function loadTimers() {
+  try {
+    const data = await window.__TAURI__.core.invoke('read_custom_timers');
+    customTimers = data.timers || [];
+    timerOrderIds = data.ordered_ids || [];
+  } catch (_) {
+    customTimers = [];
+    timerOrderIds = [];
+  }
+  // Build full order: presets first (in saved order if available), then custom
+  const allIds = getAllTimerIds();
+  const missing = allIds.filter(id => !timerOrderIds.includes(id));
+  timerOrderIds = [...timerOrderIds.filter(id => allIds.includes(id)), ...missing];
+}
+
+async function saveTimers() {
+  try {
+    await window.__TAURI__.core.invoke('write_custom_timers', {
+      timers: customTimers,
+      orderedIds: timerOrderIds,
+    });
+  } catch (e) { console.error('Timer save failed:', e); }
+}
+
+function getAllTimerIds() {
+  return [...PRESET_TIMERS.map(t => t.id), ...customTimers.map(t => t.id)];
+}
+
+function getTimerById(id) {
+  return PRESET_TIMERS.find(t => t.id === id) || customTimers.find(t => t.id === id);
+}
+
+function isPresetTimer(id) {
+  return PRESET_TIMERS.some(t => t.id === id);
+}
+
+// ─── Timer state machine ──────────────────────────────────────────────────────
+function getTimerState(id) {
+  if (!timerStates[id]) {
+    const timer = getTimerById(id);
+    timerStates[id] = {
+      remaining: timer ? timer.duration : 0,
+      endTime: null,
+      intervalId: null,
+      state: 'idle',
+    };
+  }
+  return timerStates[id];
+}
+
+function startTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.state === 'running') return;
+  if (ts.remaining <= 0) {
+    ts.remaining = getTimerById(id).duration;
+  }
+  ts.state = 'running';
+  ts.endTime = Date.now() + ts.remaining * 1000;
+  ts.intervalId = setInterval(() => tickTimer(id), 1000);
+  refreshTimerCard(id);
+}
+
+function pauseTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.state !== 'running') return;
+  clearInterval(ts.intervalId);
+  ts.intervalId = null;
+  ts.remaining = Math.max(0, Math.ceil((ts.endTime - Date.now()) / 1000));
+  ts.endTime = null;
+  ts.state = 'paused';
+  refreshTimerCard(id);
+}
+
+function resetTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.intervalId) clearInterval(ts.intervalId);
+  const timer = getTimerById(id);
+  timerStates[id] = {
+    remaining: timer ? timer.duration : 0,
+    endTime: null,
+    intervalId: null,
+    state: 'idle',
+  };
+  refreshTimerCard(id);
+}
+
+function tickTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.state !== 'running') return;
+  ts.remaining = Math.max(0, Math.ceil((ts.endTime - Date.now()) / 1000));
+  updateTimerDisplay(id);
+  if (ts.remaining <= 0) {
+    clearInterval(ts.intervalId);
+    ts.intervalId = null;
+    ts.state = 'finished';
+    onTimerFinished(id);
+  }
+}
+
+// ─── Sound ────────────────────────────────────────────────────────────────────
+function playTimerSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    function beep(freq, start, dur) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, now + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + dur);
+    }
+
+    beep(880, 0, 0.15);
+    beep(880, 0.2, 0.15);
+    beep(1320, 0.4, 0.25);
+
+    setTimeout(() => ctx.close(), 1500);
+  } catch (_) {}
+}
+
+function onTimerFinished(id) {
+  const timer = getTimerById(id);
+  if (!timer) return;
+  playTimerSound();
+  // Try notification
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    try { new Notification(timer.name, { body: 'Таймер завершён' }); } catch (_) {}
+  }
+  // Fallback: flash card border red
+  const card = document.getElementById(`timer-card-${id}`);
+  if (card) {
+    card.classList.add('finished');
+    setTimeout(() => card.classList.remove('finished'), 3000);
+  }
+  refreshTimerCard(id);
+}
+
+function toggleTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.state === 'running') {
+    pauseTimer(id);
+  } else {
+    startTimer(id);
+  }
+}
+
+// ─── Visibility change handler ────────────────────────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  for (const id of Object.keys(timerStates)) {
+    const ts = timerStates[id];
+    if (ts.state === 'running' && ts.endTime) {
+      ts.remaining = Math.max(0, Math.ceil((ts.endTime - Date.now()) / 1000));
+      if (ts.remaining <= 0) {
+        clearInterval(ts.intervalId);
+        ts.intervalId = null;
+        ts.state = 'finished';
+        onTimerFinished(id);
+      }
+      refreshTimerCard(id);
+    }
+  }
+});
+
+// ─── Format ───────────────────────────────────────────────────────────────────
+function formatTime(secs) {
+  if (secs <= 0) return '0:00';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function parseDuration(str) {
+  str = str.trim();
+  if (/^\d+$/.test(str)) return parseInt(str, 10);
+  const parts = str.split(':').map(Number);
+  if (parts.length === 3 && parts.every(n => !isNaN(n))) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2 && parts.every(n => !isNaN(n))) return parts[0] * 60 + parts[1];
+  return null;
+}
+
+// ─── Render timers ────────────────────────────────────────────────────────────
+function renderTimers() {
+  const grid = document.getElementById('timer-grid');
+  grid.innerHTML = '';
+  for (const id of timerOrderIds) {
+    const timer = getTimerById(id);
+    if (!timer) continue;
+    grid.appendChild(makeTimerCard(timer));
+  }
+}
+
+function makeTimerCard(timer) {
+  const ts = getTimerState(timer.id);
+  const isPreset = isPresetTimer(timer.id);
+  const isRunning = ts.state === 'running';
+  const isFinished = ts.state === 'finished';
+
+  const card = document.createElement('div');
+  card.className = 'timer-card';
+  card.id = `timer-card-${timer.id}`;
+  if (isRunning) card.classList.add('active');
+  if (isFinished) card.classList.add('finished');
+  card.dataset.id = timer.id;
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'timer-card-header';
+
+  const handle = document.createElement('span');
+  handle.className = 'timer-drag-handle';
+  handle.textContent = '⠿';
+  header.appendChild(handle);
+
+  // Drag via pointer events on handle
+  handle.addEventListener('pointerdown', e => startTimerDrag(e, timer.id, card));
+
+  const name = document.createElement('span');
+  name.className = 'timer-name';
+  name.textContent = timer.name;
+  header.appendChild(name);
+
+  if (!isPreset) {
+    const actions = document.createElement('div');
+    actions.className = 'timer-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'timer-action-btn';
+    editBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+    editBtn.title = 'Редактировать';
+    editBtn.addEventListener('click', e => { e.stopPropagation(); openEditTimerModal(timer.id); });
+    actions.appendChild(editBtn);
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'timer-action-btn delete';
+    delBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>';
+    delBtn.title = 'Удалить';
+    delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCustomTimer(timer.id); });
+    actions.appendChild(delBtn);
+
+    header.appendChild(actions);
+  }
+
+  card.appendChild(header);
+
+  // Display
+  const display = document.createElement('div');
+  display.className = 'timer-display';
+  display.id = `timer-display-${timer.id}`;
+  display.textContent = formatTime(ts.remaining);
+  card.appendChild(display);
+
+  // Controls
+  const controls = document.createElement('div');
+  controls.className = 'timer-controls';
+
+  const startBtn = document.createElement('button');
+  startBtn.className = 'timer-btn-start' + (isRunning ? '' : ' paused');
+  startBtn.id = `timer-start-${timer.id}`;
+  startBtn.innerHTML = isRunning
+    ? '<span>⏸</span> Пауза'
+    : '<span>▶</span> Старт';
+  startBtn.addEventListener('click', e => { e.stopPropagation(); toggleTimer(timer.id); });
+  controls.appendChild(startBtn);
+
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'timer-btn-reset';
+  resetBtn.innerHTML = '↺';
+  resetBtn.title = 'Сбросить';
+  resetBtn.addEventListener('click', e => { e.stopPropagation(); resetTimer(timer.id); });
+  controls.appendChild(resetBtn);
+
+  card.appendChild(controls);
+  return card;
+}
+
+function refreshTimerCard(id) {
+  const oldCard = document.getElementById(`timer-card-${id}`);
+  if (!oldCard) return;
+  const timer = getTimerById(id);
+  if (!timer) return;
+  const newCard = makeTimerCard(timer);
+  oldCard.replaceWith(newCard);
+}
+
+function updateTimerDisplay(id) {
+  const el = document.getElementById(`timer-display-${id}`);
+  if (!el) return;
+  const ts = getTimerState(id);
+  el.textContent = formatTime(ts.remaining);
+}
+
+// ─── Timer CRUD ───────────────────────────────────────────────────────────────
+function openTimerModal(editId) {
+  timerEditId = editId || null;
+  const titleEl = document.getElementById('timer-modal-title');
+  const nameInput = document.getElementById('timer-name-input');
+  const durInput = document.getElementById('timer-duration-input');
+  const errEl = document.getElementById('timer-error');
+
+  errEl.textContent = '';
+  if (timerEditId) {
+    const timer = customTimers.find(t => t.id === timerEditId);
+    titleEl.textContent = 'Редактировать таймер';
+    nameInput.value = timer ? timer.name : '';
+    durInput.value = timer ? formatTime(timer.duration) : '';
+  } else {
+    titleEl.textContent = 'Добавить таймер';
+    nameInput.value = '';
+    durInput.value = '';
+  }
+  document.getElementById('timer-modal').classList.add('visible');
+  nameInput.focus();
+}
+
+function openEditTimerModal(id) {
+  const ts = getTimerState(id);
+  if (ts.state === 'running') pauseTimer(id);
+  openTimerModal(id);
+}
+
+function closeTimerModal() {
+  document.getElementById('timer-modal').classList.remove('visible');
+  timerEditId = null;
+}
+
+function saveTimerModal() {
+  const nameInput = document.getElementById('timer-name-input');
+  const durInput = document.getElementById('timer-duration-input');
+  const errEl = document.getElementById('timer-error');
+
+  const name = nameInput.value.trim();
+  const duration = parseDuration(durInput.value);
+
+  if (!name) { errEl.textContent = 'Введите название'; return; }
+  if (duration === null || duration <= 0) { errEl.textContent = 'Неверный формат длительности'; return; }
+
+  if (timerEditId) {
+    const timer = customTimers.find(t => t.id === timerEditId);
+    if (timer) {
+      timer.name = name;
+      timer.duration = duration;
+      resetTimer(timer.id);
+    }
+  } else {
+    const id = 'custom_' + Date.now();
+    customTimers.push({ id, name, duration });
+    timerOrderIds.push(id);
+  }
+
+  saveTimers();
+  closeTimerModal();
+  renderTimers();
+}
+
+function deleteCustomTimer(id) {
+  const ts = getTimerState(id);
+  if (ts.intervalId) clearInterval(ts.intervalId);
+  delete timerStates[id];
+  customTimers = customTimers.filter(t => t.id !== id);
+  timerOrderIds = timerOrderIds.filter(i => i !== id);
+  saveTimers();
+  renderTimers();
+}
+
+// ─── Timer drag-and-drop (pointer events) ─────────────────────────────────────
+let tdrg = { active: false, id: null, el: null, ghost: null, offsetY: 0, items: [] };
+
+function startTimerDrag(e, id, el) {
+  e.preventDefault();
+  e.stopPropagation();
+  const rect = el.getBoundingClientRect();
+  tdrg = { active: true, id, el, ghost: null, offsetY: e.clientY - rect.top, items: [] };
+  const ghost = el.cloneNode(true);
+  ghost.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:.85;pointer-events:none;z-index:1000;outline:2px solid #4CAF50;border-radius:8px;`;
+  document.body.appendChild(ghost);
+  tdrg.ghost = ghost;
+  el.classList.add('dragging');
+
+  document.querySelectorAll('.timer-card').forEach(card => {
+    const cid = card.dataset.id;
+    if (!cid || cid === id) return;
+    const r = card.getBoundingClientRect();
+    tdrg.items.push({ id: cid, el: card, top: r.top, height: r.height });
+  });
+
+  document.addEventListener('pointermove', onTimerDragMove);
+  document.addEventListener('pointerup', onTimerDragEnd);
+}
+
+function onTimerDragMove(e) {
+  if (!tdrg.active) return;
+  tdrg.ghost.style.top = (e.clientY - tdrg.offsetY) + 'px';
+  tdrg.items.forEach(it => {
+    it.el.classList.toggle('drag-over-card',
+      it.id !== tdrg.id && e.clientY >= it.top && e.clientY <= it.top + it.height
+    );
+  });
+}
+
+function onTimerDragEnd(e) {
+  if (!tdrg.active) return;
+  document.removeEventListener('pointermove', onTimerDragMove);
+  document.removeEventListener('pointerup', onTimerDragEnd);
+
+  let targetId = null;
+  tdrg.items.forEach(it => {
+    if (it.id !== tdrg.id && e.clientY >= it.top && e.clientY <= it.top + it.height) {
+      targetId = it.id;
+    }
+  });
+
+  if (targetId) {
+    const si = timerOrderIds.indexOf(tdrg.id);
+    const di = timerOrderIds.indexOf(targetId);
+    if (si !== -1 && di !== -1) {
+      timerOrderIds.splice(si, 1);
+      timerOrderIds.splice(di, 0, tdrg.id);
+      saveTimers();
+    }
+  }
+
+  tdrg.ghost.remove();
+  tdrg.el.classList.remove('dragging');
+  tdrg.items.forEach(it => it.el.classList.remove('drag-over-card'));
+  tdrg = { active: false, id: null, el: null, ghost: null, offsetY: 0, items: [] };
+  renderTimers();
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+function requestNotificationPermission() {
+  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+//  NAVIGATION — Dock bar
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+function switchView(view) {
+  const farmView = document.getElementById('farm-bp-view');
+  const timersView = document.getElementById('timers-view');
+  const dockFarm = document.getElementById('dock-farm');
+  const dockTimers = document.getElementById('dock-timers');
+
+  if (view === 'farm') {
+    farmView.classList.remove('hidden');
+    timersView.classList.add('hidden');
+    dockFarm.classList.add('active');
+    dockTimers.classList.remove('active');
+  } else {
+    farmView.classList.add('hidden');
+    timersView.classList.remove('hidden');
+    dockFarm.classList.remove('active');
+    dockTimers.classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+//  FARM BP — Existing functions
+// ═══════════════════════════════════════════════════════════════════════════════════
 
 // ─── BP & Multipliers ─────────────────────────────────────────────────────────
 function isTaskDone(task) {
@@ -205,7 +711,6 @@ function makeCatBlock(cat, label, tasks) {
   hdr.addEventListener('click', () => toggleCat(cat));
 
   const doneCnt = tasks.filter(t => isTaskDone(t)).length;
-  const earnedBP = tasks.filter(t => isTaskDone(t)).reduce((s,t) => s + t.bp * getMultiplier(), 0);
 
   hdr.innerHTML = `
     <div class="cat-left">
@@ -213,7 +718,6 @@ function makeCatBlock(cat, label, tasks) {
       <span class="cat-bp">${doneCnt}/${tasks.length}</span>
     </div>
     <div class="cat-right">
-      <span class="cat-bp">${earnedBP} BP</span>
       <span class="cat-chevron">▾</span>
     </div>
   `;
